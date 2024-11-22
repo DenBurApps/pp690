@@ -69,12 +69,12 @@ public class EventData
 public class WeightData
 {
     public bool IsPetOnly;
-    public int TotalWeight;
-    public int OwnerWeight;
+    public string TotalWeight;
+    public string OwnerWeight;
     public DateTime Date;
 
 
-    public WeightData(bool isPetOnly, int totalWeight, int ownerWeight, DateTime date)
+    public WeightData(bool isPetOnly, string totalWeight, string ownerWeight, DateTime date)
     {
         IsPetOnly = isPetOnly;
         TotalWeight = totalWeight;

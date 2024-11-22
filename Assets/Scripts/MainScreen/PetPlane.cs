@@ -28,6 +28,7 @@ public class PetPlane : MonoBehaviour
     public event Action<PetPlane> EventButtonClicked;
     public event Action<PetPlane> WeightButtonClicked;
     public event Action<PetPlane> InfoButtonClicked;
+    public event Action Edited;
     
     public bool IsActive { get; private set; }
     public PetData PetData { get; private set; }
@@ -60,6 +61,15 @@ public class PetPlane : MonoBehaviour
         gameObject.SetActive(true);
         IsActive = true;
 
+        UpdateUI();
+    }
+
+    public void UpdateData(PetData data)
+    {
+        if (data == null)
+            throw new ArgumentNullException(nameof(data));
+
+        PetData = data;
         UpdateUI();
     }
 
@@ -131,6 +141,8 @@ public class PetPlane : MonoBehaviour
         {
             _imagePlacer.ResetPhotos();
         }
+        
+        Edited?.Invoke();
     }
     
     public void Reset()

@@ -24,11 +24,11 @@ public class WeightPlane : MonoBehaviour
 
         if (Data.IsPetOnly)
         {
-            _weight.text = Data.TotalWeight.ToString() + "KG";
+            _weight.text = Data.TotalWeight.ToString() + " KG";
         }
         else
         {
-            _weight.text = Data.OwnerWeight + "KG/" + Data.TotalWeight;
+            _weight.text = Data.OwnerWeight + "KG/" + Data.TotalWeight + " KG";
         }
 
         _date.text = Data.Date.ToString("dd MMM yyyy");

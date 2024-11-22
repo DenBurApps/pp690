@@ -3,20 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(ScreenVisabilityHandler))]
-public class WeightScreen : MonoBehaviour
+public class EventScreen : MonoBehaviour
 {
-    [SerializeField] private List<WeightPlane> _weightPlanes;
+    [SerializeField] private List<EventPlane> _eventPlanes;
     [SerializeField] private MainScreen _mainScreen;
     [SerializeField] private GameObject _emptyPlane;
-    [SerializeField] private AddWeightScreen _addWeightScreen;
-
+    [SerializeField] private AddEvent _addEvent;
+    
     private ScreenVisabilityHandler _screenVisabilityHandler;
     private PetPlane _petPlane;
-    
-    public event Action AddWeight;
+
+    public event Action AddEvent;
     public event Action BackClicked;
 
     private void Awake()
@@ -31,31 +30,31 @@ public class WeightScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        foreach (var plane in _weightPlanes)
+        foreach (var plane in _eventPlanes)
         {
-            plane.Deleted += DeleteWeight;
+            plane.Deleted += DeleteVacine;
         }
 
-        _mainScreen.OpenWeight += Enable;
-        _addWeightScreen.Saved += AddNewWeight;
-        _addWeightScreen.BackClicked += _screenVisabilityHandler.EnableScreen;
+        _mainScreen.OpenEvents += Enable;
+        _addEvent.Saved += OnAddEvent;
+        _addEvent.BackClicked += _screenVisabilityHandler.EnableScreen;
     }
 
     private void OnDisable()
     {
-        foreach (var plane in _weightPlanes)
+        foreach (var plane in _eventPlanes)
         {
-            plane.Deleted -= DeleteWeight;
+            plane.Deleted -= DeleteVacine;
         }
 
-        _mainScreen.OpenWeight -= Enable;
-        _addWeightScreen.Saved -= AddNewWeight;
-        _addWeightScreen.BackClicked -= _screenVisabilityHandler.EnableScreen;
+        _mainScreen.OpenEvents -= Enable;
+        _addEvent.Saved -= OnAddEvent;
+        _addEvent.BackClicked -= _screenVisabilityHandler.EnableScreen;
     }
 
-    public void OnAddWeightClicked()
+    public void OnAddEventClicked()
     {
-        AddWeight?.Invoke();
+        AddEvent?.Invoke();
         _screenVisabilityHandler.DisableScreen();
     }
 
@@ -64,7 +63,6 @@ public class WeightScreen : MonoBehaviour
         BackClicked?.Invoke();
         _screenVisabilityHandler.DisableScreen();
     }
-    
 
     private void Enable(PetPlane plane)
     {
@@ -73,49 +71,49 @@ public class WeightScreen : MonoBehaviour
 
         _petPlane = plane;
 
-        if (_petPlane.PetData.WeightDatas.Count <= 0)
+        if (_petPlane.PetData.EventDatas.Count <= 0)
         {
             ToggleEmptyPlane();
             return;
         }
 
-        foreach (var data in _petPlane.PetData.WeightDatas)
+        foreach (var data in _petPlane.PetData.EventDatas)
         {
-            var availablePlane = _weightPlanes.FirstOrDefault(plane => !plane.IsActive);
+            var availablePlane = _eventPlanes.FirstOrDefault(plane => !plane.IsActive);
 
             if (availablePlane != null)
                 availablePlane.Enable(data);
         }
-
+        
         ToggleEmptyPlane();
     }
 
-    private void AddNewWeight(WeightData data)
+    private void OnAddEvent(EventData data)
     {
         _screenVisabilityHandler.EnableScreen();
 
-        var availablePlane = _weightPlanes.FirstOrDefault(plane => !plane.IsActive);
+        var availablePlane = _eventPlanes.FirstOrDefault(plane => !plane.IsActive);
 
         if (availablePlane != null)
             availablePlane.Enable(data);
 
-        if (!_petPlane.PetData.WeightDatas.Contains(data))
+        if (!_petPlane.PetData.EventDatas.Contains(data))
         {
-            _petPlane.PetData.WeightDatas.Add(data);
+            _petPlane.PetData.EventDatas.Add(data);
             _petPlane.UpdateUI();
         }
-
+        
         ToggleEmptyPlane();
     }
 
-    private void DeleteWeight(WeightPlane plane)
+    private void DeleteVacine(EventPlane plane)
     {
-        if (_petPlane.PetData.WeightDatas.Contains(plane.Data))
+        if (_petPlane.PetData.EventDatas.Contains(plane.Data))
         {
-            _petPlane.PetData.WeightDatas.Remove(plane.Data);
+            _petPlane.PetData.EventDatas.Remove(plane.Data);
             _petPlane.UpdateUI();
         }
-
+        
         plane.Reset();
         plane.Disable();
         ToggleEmptyPlane();
@@ -123,12 +121,12 @@ public class WeightScreen : MonoBehaviour
 
     private void ToggleEmptyPlane()
     {
-        _emptyPlane.SetActive(_weightPlanes.All(plane => !plane.IsActive));
+        _emptyPlane.SetActive(_eventPlanes.All(plane => !plane.IsActive));
     }
 
     private void DisableAllPlanes()
     {
-        foreach (var plane in _weightPlanes)
+        foreach (var plane in _eventPlanes)
         {
             plane.Reset();
             plane.Disable();

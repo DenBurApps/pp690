@@ -37,6 +37,7 @@ public class VacinesScreen : MonoBehaviour
 
         _mainScreen.OpenVacines += Enable;
         _addNewVacine.Saved += AddNewVacine;
+        _addNewVacine.BackClicked += _screenVisabilityHandler.EnableScreen;
     }
 
     private void OnDisable()
@@ -48,6 +49,7 @@ public class VacinesScreen : MonoBehaviour
 
         _mainScreen.OpenVacines -= Enable;
         _addNewVacine.Saved -= AddNewVacine;
+        _addNewVacine.BackClicked -= _screenVisabilityHandler.EnableScreen;
     }
 
     public void OnAddVacineClicked()
