@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public static class PetDataSaveSystem
@@ -9,7 +10,8 @@ public static class PetDataSaveSystem
 
     public static void Save(List<PetData> petDataList)
     {
-        var json = JsonUtility.ToJson(new PetDataListWrapper(petDataList));
+        PetDataListWrapper wrapper = new PetDataListWrapper(petDataList);
+        string json = JsonConvert.SerializeObject(wrapper, Formatting.Indented);
         File.WriteAllText(SavePath, json);
         Debug.Log($"Pet data saved to: {SavePath}");
     }
@@ -23,7 +25,7 @@ public static class PetDataSaveSystem
         }
 
         var json = File.ReadAllText(SavePath);
-        var wrapper = JsonUtility.FromJson<PetDataListWrapper>(json);
+        var wrapper = JsonConvert.DeserializeObject<PetDataListWrapper>(json);
         Debug.Log("Pet data loaded successfully.");
         return wrapper.PetDataList;
     }
